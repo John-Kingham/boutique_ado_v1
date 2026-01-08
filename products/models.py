@@ -13,6 +13,9 @@ class Category(models.Model):
     def get_friendly_name(self):
         return self.friendly_name
 
+    class Meta:
+        verbose_name_plural = "Categories"
+
 
 class Product(models.Model):
     """A product sold on the site."""
