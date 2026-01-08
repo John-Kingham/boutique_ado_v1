@@ -1,5 +1,8 @@
-# environment variables
+# Environment variables
 env.py
+
+# Fixtures
+fixtures/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
