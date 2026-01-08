@@ -68,7 +68,7 @@ body {
   top: 0;
   left: 0;
   background: white;
-  z-index: -1;  
+  z-index: -1;
 }
 
 /* -------------------------------- Media Queries */
@@ -80,7 +80,7 @@ body {
   }
 }
 
-/* fixed top navbar only on medium and up */
+/* Fixed top navbar only on medium and up */
 @media (min-width: 992px) {
   .fixed-top-desktop-only {
     position: fixed;
@@ -92,5 +92,15 @@ body {
 
   .header-container {
     padding-top: 164px;
+  }
+}
+
+/* Pad the top when navbar is collapsed on mobile */
+@media (max-width: 991px) {
+  .header-container {
+    padding-top: 116px;
+  }
+  body {
+    height: calc(100vh - 116px);
   }
 }
