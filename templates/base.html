@@ -54,7 +54,7 @@
 
         <!-- search form -->
         <div class="col-12 col-lg-4 my-auto text-center text-lg-left">
-          <form method="GET" action="">
+          <form method="GET" action="{% url 'products' %}">
             <div class="input-group w-100">
               <input class="form-control border border-black rounded-0" type="text" name="q" placeholder="Search our site">
               <div class="input-group-append">
@@ -108,6 +108,7 @@
           </ul>
         </div>
       </div>
+
       <!-- main nav -->
       <div class="row bg-white">
         <nav class="navbar navbar-expand-lg navbar-light w-100">
@@ -117,6 +118,7 @@
           {% include "includes/mobile-top-header.html" %}
           {% include "includes/main-nav.html" %}
       </div>
+
       <!-- delivery banner -->
       <div id="delivery-banner" class="row text-center">
         <div class="col bg-black text-white">
