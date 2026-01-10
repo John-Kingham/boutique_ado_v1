@@ -7,13 +7,13 @@ from .models import Category, Product
 
 def all_products(request):
     """
-    Show the all products page.
+    Show the products page.
 
     Show all products by default.
-    If the user submitted a search, only show matching products. If the search
+    If the user submitted a search, show matching products. If the search
     term is blank, show an error message.
-    If the user selected "products by X", show sorted products.
-    If the user selected a category, only show matching products.
+    If the user selected a sort option, show sorted products.
+    If the user selected a category, show matching products.
     """
 
     # Show all products by default
@@ -25,8 +25,8 @@ def all_products(request):
 
     if request.GET:
 
-        # If user submitted a product search, show matching products. If the
-        # search term is empty, show an error message.
+        # If user submitted a search, show matching products. If the search
+        # term is empty, show an error message.
         if "q" in request.GET:
             search_term = request.GET["q"]
             if search_term:
@@ -38,15 +38,19 @@ def all_products(request):
                 messages.error(request, "You didn't enter any search text!")
                 return redirect(reverse("products"))
 
-        # If user selected "products by X", show sorted products.
+        # If user selected a sort option, show sorted products.
         if "sort" in request.GET:
             sort = request.GET["sort"]
+            direction = request.GET.get("direction")
             sortkey = sort
             # If sorting by alpha field, use lowercase sort
             if sort == "name":
-                sortkey = "lower_name"
                 products = products.annotate(lower_name=Lower("name"))
-            if request.GET.get("direction") == "desc":
+                sortkey = "lower_name"
+            # if sorting by category, sort by category name (not id)
+            if sort == "category":
+                sortkey = "category__name"
+            if direction == "desc":
                 sortkey = f"-{sortkey}"
             products = products.order_by(sortkey)
 
