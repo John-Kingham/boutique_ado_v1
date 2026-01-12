@@ -77,6 +77,7 @@ def _default_context_for_all_products():
 
 def _update_context_for_search(search_term, context):
     """Update the context to filter products for a search."""
+    context["search_term"] = search_term
     context["products"] = context["products"].filter(
         Q(name__icontains=search_term) | Q(description__icontains=search_term)
     )
