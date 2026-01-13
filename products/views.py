@@ -15,19 +15,19 @@ def all_products(request):
     If the user selected a sort option, show sorted products.
     If the user selected categories, show matching products.
     """
-
     context = _default_context_for_all_products()
-    if request.GET and "q" in request.GET:
-        search_term = request.GET["q"]
-        if search_term:
-            _update_context_for_search(search_term, context)
-        else:
-            messages.error(request, "You didn't enter any search text!")
-            return redirect(reverse("products"))
-    if request.GET and "sort" in request.GET:
-        _update_context_for_sort(request, context)
-    if request.GET and "category" in request.GET:
-        _update_context_for_category_filter(request, context)
+    if request.GET:
+        if "q" in request.GET:
+            search_term = request.GET["q"]
+            if search_term:
+                _update_context_for_search(search_term, context)
+            else:
+                messages.error(request, "You didn't enter any search text!")
+                return redirect(reverse("products"))
+        if "sort" in request.GET:
+            _update_context_for_sort(request, context)
+        if "category" in request.GET:
+            _update_context_for_category_filter(request, context)
     return render(request, "products/products.html", context)
 
 
