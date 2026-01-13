@@ -16,13 +16,13 @@ def bag_contents(request):
         "total": 0,
     }
     bag = request.session.get("bag", {})
-    for item_id, item_quantity in bag.items():
-        update_context_for_bag_item(context, item_id, item_quantity)
-    update_context_for_delivery(context)
+    for item_id, item_data in bag.items():
+        _update_context_for_bag_item(context, item_id, item_data)
+    _update_context_for_delivery(context)
     return context
 
 
-def update_context_for_delivery(context):
+def _update_context_for_delivery(context):
     """
     Update bag context based on delivery fee.
 
@@ -36,18 +36,36 @@ def update_context_for_delivery(context):
     context["grand_total"] = total + delivery
 
 
-def update_context_for_bag_item(context, item_id, item_quantity):
+def _update_context_for_bag_item(context, item_id, item_data):
     """Update context for a shopping bag item."""
     product = get_object_or_404(Product, pk=item_id)
-    context["total"] += product.price * item_quantity
-    context["product_count"] += item_quantity
-    context["bag_items"].append(
-        {
+    items_by_size = _get_items_by_size(item_data)
+    for size, quantity in items_by_size.items():
+        context["total"] += product.price * quantity
+        context["product_count"] += quantity
+        item_details = {
             "item_id": item_id,
-            "quantity": item_quantity,
+            "quantity": quantity,
             "product": product,
         }
-    )
+        if size:
+            item_details["size"] = size
+        context["bag_items"].append(item_details)
+
+
+def _get_items_by_size(item_data):
+    """
+    Return a dict of size: quantity.
+
+    If the item has no size, return "": quantity.
+    """
+    item_data_is_quantity = isinstance(item_data, int)
+    if item_data_is_quantity:
+        size = ""
+        quantity = item_data
+        return {size: quantity}
+    else:
+        return item_data["items_by_size"]
 
 
 def _free_delivery_gap(total):
