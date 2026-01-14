@@ -43,14 +43,14 @@ def _update_context_for_bag_item(context, item_id, item_data):
     for size, quantity in items_by_size.items():
         context["total"] += product.price * quantity
         context["product_count"] += quantity
-        item_details = {
+        item = {
             "item_id": item_id,
             "quantity": quantity,
             "product": product,
         }
         if size:
-            item_details["size"] = size
-        context["bag_items"].append(item_details)
+            item["size"] = size
+        context["bag_items"].append(item)
 
 
 def _get_items_by_size(item_data):

@@ -13,12 +13,12 @@
   }
 
   // Apply enable/disable rules each time the input is changed
-  $(".qty_input").on("change", function () {
+  $(".qty_input").on("change", function() {
     handleEnableDisable($(this).data("item_id"));
   });
 
   // Increment the item quantity when user clicks on "+" button
-  $(".increment-qty").on("click", function (e) {
+  $(".increment-qty").on("click", function(e) {
     e.preventDefault();
     const closestInput = $(this).closest(".input-group").find(".qty_input");
     const currentValue = parseInt($(closestInput).val());
@@ -27,7 +27,7 @@
   });
 
   // Decrement the item quantity when user clicks on "-" button
-  $(".decrement-qty").on("click", function (e) {
+  $(".decrement-qty").on("click", function(e) {
     e.preventDefault();
     const closestInput = $(this).closest(".input-group").find(".qty_input");
     const currentValue = parseInt($(closestInput).val());
