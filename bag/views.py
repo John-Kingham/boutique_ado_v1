@@ -1,4 +1,6 @@
+from django.contrib import messages
 from django.shortcuts import HttpResponse, redirect, render, reverse
+from products.models import Product
 
 
 def view_bag(request):
@@ -14,7 +16,7 @@ def add_to_bag(request, item_id):
     if size:
         _update_bag_with_sized_items(item_id, bag, quantity, size)
     else:
-        _update_bag_with_unsized_items(item_id, bag, quantity)
+        _update_bag_with_unsized_items(request, item_id, bag, quantity)
     request.session.modified = True
     return redirect(request.POST.get("redirect_url"))
 
@@ -57,10 +59,12 @@ def remove_from_bag(request, item_id):
         return HttpResponse(status=500)
 
 
-def _update_bag_with_unsized_items(item_id, bag, quantity):
+def _update_bag_with_unsized_items(request, item_id, bag, quantity):
     """Update the bag with items that don't have a size."""
     if item_id not in bag:
         bag[item_id] = 0
+        product = Product.objects.get(pk=item_id)
+        messages.success(request, f"Added {product.name} to your bag!")
     bag[item_id] += quantity
 
 

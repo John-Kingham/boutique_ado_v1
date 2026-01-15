@@ -101,6 +101,21 @@ a.category-badge > span.badge:hover {
   color: white !important;
 }
 
+.message-container {
+  position: fixed;
+  top: 72px;
+  right: 15px;
+  z-index: 9999999;
+}
+
+.custom-toast {
+  overflow: visible;
+}
+
+.toast-capper {
+  height: 2px;
+}
+
 /* -------------------------------- Media Queries */
 
 /* Slightly larger container on xl screens */
@@ -117,7 +132,7 @@ a.category-badge > span.badge:hover {
     top: 0;
     right: 0;
     left: 0;
-    z-index: 1030;
+    z-index: 100;
   }
 
   .header-container {
