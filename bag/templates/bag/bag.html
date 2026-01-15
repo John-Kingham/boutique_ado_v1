@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load bag_tools %}
 
 {% block page_header %}
 <div class="container header-container">
@@ -53,7 +54,7 @@
               <p class="my-0">£{{ item.product.price }}</p>
             </td>
             <td class="py-3">
-              <form class="form update-form" method="POST" action="">
+              <form class="form update-form" method="POST" action="{% url 'adjust_bag' item.item_id %}">
                 {% csrf_token %}
                 <div class="form-group">
                   <div class="input-group">
@@ -80,10 +81,10 @@
                 </div>
               </form>
               <a class="update-link text-info"><small>Update</small></a>
-              <a class="remove-link text-danger float-right" id="remove_{{ item.item_id }}" data-size="{{ item.size }}"><small>Remove</small></a>
+              <a class="remove-link text-danger float-right" id="remove_{{ item.item_id }}" data-product_size="{{ item.size }}"><small>Remove</small></a>
             </td>
             <td class="py-3">
-              <p class="my-0">£{{ item.product.price }}</p>
+              <p class="my-0">£{{ item.product.price|calc_subtotal:item.quantity }}</p>
             </td>
           </tr>
           {% endfor %}
@@ -130,6 +131,7 @@
 {% block postloadjs %}
 {{ block.super }}
 {% include "products/includes/quantity_input_script.html" %}
+
 <script type="text/javascript">
   // Save updated quantity
   $(".update-link").on("click", function() {
@@ -140,11 +142,11 @@
   $(".remove-link").on("click", function() {
     const csrfToken = "{{ csrf_token }}";
     const itemId = $(this).attr("id").split("remove_")[1];
-    const size = $(this).data("size");
-    const url = `/bag/remove/${itemId}`;
+    const size = $(this).data("product_size");
+    const url = `/bag/remove/${itemId}/`;
     const data = {
       "csrfmiddlewaretoken": csrfToken,
-      "size": size,
+      "product_size": size,
     };
 
     $.post(url, data).done(function() {
@@ -152,4 +154,5 @@
     });
   });
 </script>
+
 {% endblock postloadjs %}
