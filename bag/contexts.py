@@ -26,7 +26,7 @@ def _update_context_for_delivery(context):
     """
     Update bag context based on delivery fee.
 
-    Update free_delivery_delta and grand_total.
+    Recalculate the free_delivery_delta and grand_total items.
     """
     total = context["total"]
     delivery = context["delivery"]

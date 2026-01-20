@@ -51,9 +51,12 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "bag",
     "checkout",
+    "crispy_forms",
     "home",
     "products",
 ]
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -78,11 +81,16 @@ TEMPLATES = [
         "OPTIONS": {
             "context_processors": [
                 "django.template.context_processors.debug",
+                "django.template.context_processors.media",
                 # `allauth` needs this from django
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "bag.contexts.bag_contents",
+            ],
+            "builtins": [
+                "crispy_forms.templatetags.crispy_forms_tags",
+                "crispy_forms.templatetags.crispy_forms_field",
             ],
         },
     },
