@@ -55,9 +55,9 @@ def _update_context_for_bag_item(context, item_id, item_data):
 
 def _get_items_by_size(item_data):
     """
-    Return a dict of size: quantity.
+    Return a dict with the structure {size: quantity}.
 
-    If the item has no size, return "": quantity.
+    If the item has no size, return {"": quantity}.
     """
     item_data_is_quantity = isinstance(item_data, int)
     if item_data_is_quantity:
