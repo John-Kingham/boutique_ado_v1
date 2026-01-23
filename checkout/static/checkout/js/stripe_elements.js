@@ -8,6 +8,7 @@
 
 let stripePublicKey = $("#id_stripe_public_key").text().slice(1, -1);
 let clientSecret = $("#id_client_secret").text().slice(1, -1);
+// @ts-ignore (can't get stripe types working!)
 let stripe = Stripe(stripePublicKey);
 let elements = stripe.elements();
 let bootstrapDangerColour = "#dc3545";

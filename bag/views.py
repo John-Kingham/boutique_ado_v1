@@ -23,7 +23,7 @@ def add_to_bag(request, item_id):
         _update_bag_with_sized_items(request, item_id, bag, quantity, size)
     else:
         _update_bag_with_unsized_items(request, item_id, bag, quantity)
-    request.session.modified = True
+    request.session["bag"] = bag
     return redirect(request.POST.get("redirect_url"))
 
 
@@ -54,7 +54,7 @@ def adjust_bag(request, item_id):
             del bag[item_id]
             message = f"Removed {product.name} from bag!"
     messages.success(request, message)
-    request.session.modified = True
+    request.session["bag"] = bag
     return redirect(reverse("view_bag"))
 
 

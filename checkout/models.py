@@ -51,9 +51,8 @@ class Order(models.Model):
 
     def update_order_total(self):
         """Update the order's total, excluding delivery costs."""
-        self.order_total = self.lineitems.aggregate(Sum("lineitem_total"))[
-            "lineitem_total__sum"
-        ]
+        result = self.lineitems.aggregate(order_total=Sum("lineitem_total"))
+        self.order_total = result["order_total"] or 0
 
     def save(self, *args, **kwargs):
         """Override the default .save() so the order has a unique number."""

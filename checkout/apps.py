@@ -6,4 +6,5 @@ class CheckoutConfig(AppConfig):
     name = "checkout"
 
     def ready(self):
+        # Run the signals module to attach the signal receivers
         import checkout.signals  # noqa: F401
