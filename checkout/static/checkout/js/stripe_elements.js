@@ -46,11 +46,13 @@ card.addEventListener("change", (event) => {
 });
 
 // Handle form submission
-let form = document.getElementById("payment-form");
-form.addEventListener("submit", (event) => {
+let paymentForm = document.getElementById("payment-form");
+paymentForm.addEventListener("submit", (event) => {
   event.preventDefault();
   card.update({ disabled: true });
   $("#submit-button").attr("disabled", "disabled");
+  $("#payment-form").fadeToggle(100);
+  $("#loading-overlay").fadeToggle(100);
   stripe
     .confirmCardPayment(clientSecret, { payment_method: { card: card } })
     .then((result) => {
@@ -62,10 +64,12 @@ form.addEventListener("submit", (event) => {
                 <span>${result.error.message}</span>`);
         card.update({ disabled: false });
         $("#submit-button").removeAttr("disabled");
+        $("#payment-form").fadeToggle(100);
+        $("#loading-overlay").fadeToggle(100);
       } else {
         if (result.paymentIntent.status === "succeeded") {
           // @ts-expect-error (as the form var isn't cast to a HTMLForm type)
-          form.submit();
+          paymentForm.submit();
         }
       }
     });
