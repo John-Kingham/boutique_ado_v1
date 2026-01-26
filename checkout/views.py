@@ -18,7 +18,8 @@ from products.models import Product
 def checkout(request):
     """A view for the checkout page."""
     if request.method == "POST":
-        return _save_order(request)
+        response = _save_order(request)
+        return response
     bag_is_empty = not request.session.get("bag")
     if bag_is_empty:
         messages.error(request, empty_bag_error_message())
@@ -43,7 +44,11 @@ def _payment_intent(request):
 
 
 def _save_order(request):
-    """Save an order from a post request."""
+    """
+    Save an order from a post request.
+
+    Return (HTTPRedirectResponse): Redirect user to the next page.
+    """
     bag = request.session.get("bag", {})
     order_form = OrderForm(_form_data(request))
     if order_form.is_valid():
