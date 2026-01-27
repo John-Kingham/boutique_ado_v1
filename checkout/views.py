@@ -1,12 +1,23 @@
+from http import HTTPStatus
+import json
+
 from django.conf import settings
 from django.contrib import messages
-from django.shortcuts import get_object_or_404, redirect, render, reverse
+from django.shortcuts import (
+    get_object_or_404,
+    HttpResponse,
+    redirect,
+    render,
+    reverse,
+)
+from django.views.decorators.http import require_POST
 import stripe
 
 from .checkout_messages import (
     empty_bag_error_message,
     form_error_message,
     order_success_message,
+    payment_error_message,
     product_error_message,
 )
 from .forms import OrderForm
@@ -110,3 +121,23 @@ def checkout_success(request, order_number):
     messages.success(request, order_success_message(order))
     request.session.pop("bag", None)
     return render(request, "checkout/checkout_success.html", {"order": order})
+
+
+@require_POST
+def cache_checkout_data(request):
+    """Cache data when the checkout form is submitted."""
+    try:
+        payment_id = request.POST.get("client_secret").split("_secret")[0]
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        stripe.PaymentIntent.modify(
+            payment_id,
+            metadata={
+                "bag": json.dumps(request.session.get("bag", {})),
+                "save_info": request.POST.get("save_info"),
+                "username": request.user,
+            },
+        )
+        return HttpResponse(status=HTTPStatus.OK)
+    except Exception as error:
+        messages.error(request, payment_error_message())
+        return HttpResponse(content=error, status=HTTPStatus.BAD_REQUEST)

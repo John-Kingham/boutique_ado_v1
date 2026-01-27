@@ -29,10 +29,13 @@ def _update_context_for_delivery(context):
     Recalculate the free_delivery_delta and grand_total items.
     """
     total = context["total"]
-    delivery = context["delivery"]
+    delivery = 0
+    free_delivery_delta = 0
     if total < settings.FREE_DELIVERY_THRESHOLD:
         delivery = _delivery_fee(total)
-        context["free_delivery_delta"] = _free_delivery_gap(total)
+        free_delivery_delta = _free_delivery_delta(total)
+    context["delivery"] = delivery
+    context["free_delivery_delta"] = free_delivery_delta
     context["grand_total"] = total + delivery
 
 
@@ -68,8 +71,8 @@ def _get_items_by_size(item_data):
         return item_data["items_by_size"]
 
 
-def _free_delivery_gap(total):
-    """Return gap between order total and free delivery threshold."""
+def _free_delivery_delta(total):
+    """Return delta between order total and free delivery threshold."""
     return settings.FREE_DELIVERY_THRESHOLD - total
 
 

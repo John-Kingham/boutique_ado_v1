@@ -22,3 +22,10 @@ def order_success_message(order):
         f"Your order number is {order.order_number}. "
         f"A confirmation email will be sent to {order.email}."
     )
+
+
+def payment_error_message():
+    return (
+        "Sorry, your payment cannot be processed right now. "
+        "Please try again later."
+    )
