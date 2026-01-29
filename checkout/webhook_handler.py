@@ -27,7 +27,6 @@ class StripeWH_Handler:
         payment_intent = event.data.object
         pi_id = payment_intent.id
         bag = payment_intent.metadata.bag
-        save_info = payment_intent.metadata.save_info
         stripe_charge = stripe.Charge.retrieve(payment_intent.latest_charge)
         billing_details = stripe_charge.billing_details
         shipping_details = payment_intent.shipping
