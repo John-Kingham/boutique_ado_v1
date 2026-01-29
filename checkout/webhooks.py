@@ -29,11 +29,11 @@ def webhook(request):
 def handle_event(request, event):
     handler_object = StripeWH_Handler(request)
     event_handler_map = {
-        "payment_intent.succeeded": handler_object.on_payment_succeeded,
-        "payment_intent.payment_failed": handler_object.on_payment_failed,
+        "payment_intent.succeeded": handler_object.handle_payment_succeeded,
+        "payment_intent.payment_failed": handler_object.handle_payment_failed,
     }
     handler_method = event_handler_map.get(
-        event["type"], handler_object.on_unhandled_event
+        event["type"], handler_object.handle_other_event
     )
     response = handler_method(event)
     return response

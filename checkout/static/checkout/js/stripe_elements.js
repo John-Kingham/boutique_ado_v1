@@ -95,18 +95,16 @@ paymentForm.addEventListener("submit", (event) => {
         .then((result) => {
           if (result.error) {
             $(document.getElementById("card-errors")).html(`
-          <span class="icon" role="alert">
-            <i class="fas fa-times"></i>
-          </span>
-          <span>${result.error.message}</span>`);
+              <span class="icon" role="alert">
+                <i class="fas fa-times"></i>
+              </span>
+              <span>${result.error.message}</span>`);
             stripeCard.update({ disabled: false });
             $("#submit-button").removeAttr("disabled");
             $("#payment-form").fadeToggle(100);
             $("#loading-overlay").fadeToggle(100);
-          } else {
-            if (result.paymentIntent.status === "succeeded") {
-              paymentForm.submit();
-            }
+          } else if (result.paymentIntent.status === "succeeded") {
+            paymentForm.submit();
           }
         });
     })
