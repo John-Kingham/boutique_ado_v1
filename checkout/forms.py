@@ -18,23 +18,9 @@ class OrderForm(forms.ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
-        """
-        Initialise the form.
-
-        Add placeholders and classes, remove auto-generated labels and set
-        autofocus on first field.
-        """
+        """Initialise the form."""
         super().__init__(*args, **kwargs)
-        placeholders = {
-            "full_name": "Full Name",
-            "email": "Email Address",
-            "phone_number": "Phone Number",
-            "postcode": "Postal Code",
-            "town_or_city": "Town or City",
-            "street_address1": "Street Address 1",
-            "street_address2": "Street Address 2",
-            "county": "County, State or Locality",
-        }
+        placeholders = self._placeholders()
         self.fields["full_name"].widget.attrs["autofocus"] = True
         for field_name, field in self.fields.items():
             field.widget.attrs["class"] = "stripe-style-input"
@@ -44,3 +30,16 @@ class OrderForm(forms.ModelForm):
                 if field.required:
                     placeholder += " *"
                 field.widget.attrs["placeholder"] = placeholder
+
+    def _placeholders(self):
+        """Return form field placeholders."""
+        return {
+            "full_name": "Full Name",
+            "email": "Email Address",
+            "phone_number": "Phone Number",
+            "postcode": "Postal Code",
+            "town_or_city": "Town or City",
+            "street_address1": "Street Address 1",
+            "street_address2": "Street Address 2",
+            "county": "County, State or Locality",
+        }
