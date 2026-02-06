@@ -43,7 +43,7 @@ class Order(models.Model):
         max_length=254, null=False, blank=False, default=""
     )
 
-    def _generate_order_number(self):
+    def _new_order_number(self):
         """Generate a unique order number."""
         return uuid.uuid4().hex.upper()
 
@@ -71,7 +71,7 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         """Override the default .save() so the order has a unique number."""
         if not self.order_number:
-            self.order_number = self._generate_order_number()
+            self.order_number = self._new_order_number()
         super().save(*args, **kwargs)
 
     def __str__(self):
