@@ -8,9 +8,7 @@ from django_countries.fields import CountryField
 
 class UserProfile(models.Model):
     """
-    A user profile model.
-
-    Maintains delivery information and order history.
+    A user profile to maintain delivery information and order history.
     """
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
