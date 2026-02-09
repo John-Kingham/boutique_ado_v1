@@ -14,34 +14,33 @@ def webhook(request):
     event = None
     try:
         event = _get_stripe_event(request)
-    except ValueError:
-        # Invalid payload
+    except ValueError as payload_error:  # noqa: F841
         return HttpResponse(status=HTTPStatus.BAD_REQUEST)
     except stripe.error.SignatureVerificationError:
-        # Invalid signature
         return HttpResponse(status=HTTPStatus.BAD_REQUEST)
     except Exception as exception:
         return HttpResponse(content=exception, status=HTTPStatus.BAD_REQUEST)
-    response = handle_event(request, event)
+    response = _handle_event(request, event)
     return response
 
 
-def handle_event(request, event):
-    handler_object = StripeWH_Handler(request)
+def _handle_event(request, event):
+    wh_handler = StripeWH_Handler(request)
     event_handler_map = {
-        "payment_intent.succeeded": handler_object.handle_payment_succeeded,
-        "payment_intent.payment_failed": handler_object.handle_payment_failed,
+        "payment_intent.succeeded": wh_handler.handle_payment_succeeded,
+        "payment_intent.payment_failed": wh_handler.handle_payment_failed,
     }
     handler_method = event_handler_map.get(
-        event["type"], handler_object.handle_other_event
+        event["type"], wh_handler.handle_other_event
     )
     response = handler_method(event)
     return response
 
 
 def _get_stripe_event(request):
-    payload = request.body
-    sig_header = request.META["HTTP_STRIPE_SIGNATURE"]
-    wh_secret = settings.STRIPE_WH_SECRET
     stripe.api_key = settings.STRIPE_SECRET_KEY
-    return stripe.Webhook.construct_event(payload, sig_header, wh_secret)
+    return stripe.Webhook.construct_event(
+        request.body,
+        request.META["HTTP_STRIPE_SIGNATURE"],
+        settings.STRIPE_WH_SECRET,
+    )
