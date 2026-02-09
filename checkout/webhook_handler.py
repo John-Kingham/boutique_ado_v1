@@ -2,7 +2,10 @@ from http import HTTPStatus
 import json
 import time
 
+from django.conf import settings
+from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.template.loader import render_to_string
 import stripe
 
 from profiles.models import UserProfile
@@ -16,6 +19,25 @@ class StripeWH_Handler:
 
     def __init__(self, request):
         self.request = request
+
+    def _send_confirmation_email(self, order):
+        """Send a confirmation email to the user."""
+        template = "checkout/emails/confirmation_email_subject.txt"
+        context = {"order": order}
+        email_subject = render_to_string(template, context)
+        template = "checkout/emails/confirmation_email_body.txt"
+        context = {
+            "order": order,
+            "contact_email": settings.DEFAULT_FROM_EMAIL,
+        }
+        email_body = render_to_string(template, context)
+        to_email = order.email
+        send_mail(
+            email_subject,
+            email_body,
+            settings.DEFAULT_FROM_EMAIL,
+            [to_email],
+        )
 
     def handle_other_event(self, event):
         """Handle a generic, unknown or unexpected webhook event."""
@@ -45,7 +67,6 @@ class StripeWH_Handler:
         username = intent.metadata.username
         user_is_authenticated = username != "AnonymousUser"
         if user_is_authenticated:
-            print("username = ", username)
             profile = UserProfile.objects.get(user__username=username)
             if save_info:
                 profile.default_phone_number = shipping_details.phone
@@ -86,6 +107,7 @@ class StripeWH_Handler:
                 ONE_SECOND = 1
                 time.sleep(ONE_SECOND)
         if order_exists:
+            self._send_confirmation_email(order)
             response_message = (
                 f"Webhook received: {event["type"]} | "
                 "SUCCESS: Verified order already in database"
@@ -136,7 +158,7 @@ class StripeWH_Handler:
                 return HttpResponse(
                     content=content, status=HTTPStatus.INTERNAL_SERVER_ERROR
                 )
-
+        self._send_confirmation_email(order)
         return HttpResponse(
             content=(
                 f"Webhook received: {event["type"]} |"

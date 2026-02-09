@@ -193,6 +193,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Boutique Ado global constants
+DEFAULT_FROM_EMAIL = "boutiqueado@example.com"
 FREE_DELIVERY_THRESHOLD = 50
 STANDARD_DELIVERY_PERCENTAGE = 10
 STRIPE_CURRENCY = "gbp"
